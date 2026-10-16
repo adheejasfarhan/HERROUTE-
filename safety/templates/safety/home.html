@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HerRoute | Women Safety</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #fff5fa;
+        color: #292033;
+      }
+      header {
+        background: linear-gradient(90deg, #ff4081, #9c27b0);
+        color: white;
+        padding: 20px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      header h2 {
+        margin: 0;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        margin-left: 18px;
+      }
+      .hero {
+        padding: 75px 8%;
+        text-align: center;
+      }
+      .hero h1 {
+        font-size: clamp(32px, 5vw, 52px);
+        margin-bottom: 12px;
+      }
+      .hero p {
+        font-size: 18px;
+        line-height: 1.7;
+      }
+      .button {
+        display: inline-block;
+        margin-top: 18px;
+        padding: 14px 25px;
+        border-radius: 30px;
+        background: #e91e63;
+        color: white;
+        text-decoration: none;
+      }
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 0 7% 60px;
+      }
+      .feature {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px #e8cddd;
+        width: 280px;
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #f3e1ed;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>🛡️ HerRoute</h2>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#about">About</a>
+        <a href="/api/safety/score/">Safety API</a>
+        <a href="/admin/">Admin</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>Safer Routes. Safer Journeys.</h1>
+      <p>
+        Plan your journey with safety-aware route information, community
+        reports, and emergency support.
+      </p>
+      <a class="button" href="#features">Explore HerRoute</a>
+    </section>
+
+    <section class="features" id="features">
+      <div class="feature">
+        <h3>🗺️ Safety-Aware Routes</h3>
+        <p>
+          Our goal is to compare routes using safety-related factors, not
+          distance alone.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>📍 Community Reports</h3>
+        <p>
+          Build a community reporting system for recent incidents and route
+          conditions.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>🆘 Emergency Support</h3>
+        <p>Plan for emergency contact sharing and a one-tap SOS feature.</p>
+      </div>
+    </section>
+
+    <footer>
+      HerRoute — Walk with greater awareness.
+      <br />Safety estimates are not guarantees of personal safety.
+    </footer>
+  </body>
+</html>

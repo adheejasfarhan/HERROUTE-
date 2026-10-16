@@ -1,123 +1,5677 @@
+```html
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HerRoute | Women Safety</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Leaflet CSS -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+>
+
     <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #fff5fa;
-        color: #292033;
-      }
-      header {
-        background: linear-gradient(90deg, #ff4081, #9c27b0);
-        color: white;
-        padding: 20px 7%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      header h2 {
-        margin: 0;
-      }
-      nav a {
-        color: white;
-        text-decoration: none;
-        margin-left: 18px;
-      }
-      .hero {
-        padding: 75px 8%;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            background: linear-gradient(
+                90deg,
+                #ff4081,
+                #9c27b0
+            );
+
+            color: #fff;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 15px 60px;
+
+            z-index: 1000;
+
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ffeb3b;
+        }
+
+        /* ================= DROPDOWN ================= */
+
+        details {
+            position: relative;
+        }
+
+        details summary {
+            list-style: none;
+            cursor: pointer;
+
+            color: #fff;
+            font-weight: 500;
+
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            transition: color 0.3s ease;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details summary::after {
+            content: "▼";
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        details summary:hover {
+            color: #ffeb3b;
+        }
+
+        details ul.submenu {
+            position: absolute;
+
+            top: 30px;
+            right: 0;
+
+            background: #e789db;
+
+            border-radius: 8px;
+
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+            padding: 5px;
+
+            list-style: none;
+
+            min-width: 180px;
+
+            z-index: 2000;
+        }
+
+        details ul.submenu li {
+            margin: 0;
+        }
+
+        details ul.submenu li a {
+            color: #333;
+
+            display: block;
+
+            padding: 10px 15px;
+
+            text-decoration: none;
+
+            border-radius: 6px;
+
+            font-weight: 500;
+        }
+
+        details ul.submenu li a:hover {
+            background: #f3e5f5;
+            color: #9c27b0;
+        }
+
+        /* ================= MAP ================= */
+
+        .map-section {
+            margin-top: 75px;
+            padding: 20px 40px;
+            background: #fafafa;
+        }
+
+        .map-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .map-title h2 {
+            color: #9c27b0;
+            font-size: 28px;
+        }
+
+        .map-title p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.15);
+
+            overflow: hidden;
+        }
+
+        /* ================= LOCATION STATUS ================= */
+
+        .location-status {
+            margin: 15px auto 0;
+
+            max-width: 700px;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            background: #f3e5f5;
+
+            color: #6a1b9a;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            margin-top: 0;
+
+            min-height: 75vh;
+
+            background:
+                url("https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=1600")
+                center/cover no-repeat;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            color: #fff;
+
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-content {
+            position: relative;
+
+            z-index: 1;
+
+            max-width: 750px;
+
+            padding: 20px;
+        }
+
+        .hero-content h2 {
+            font-size: 48px;
+
+            margin-bottom: 20px;
+
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+
+            margin-bottom: 30px;
+        }
+
+        .hero-content a {
+            display: inline-block;
+
+            background: #ffeb3b;
+
+            color: #333;
+
+            padding: 12px 30px;
+
+            border-radius: 30px;
+
+            font-weight: 600;
+
+            text-decoration: none;
+
+            transition: all 0.3s ease;
+        }
+
+        .hero-content a:hover {
+            background: #fff;
+
+            transform: scale(1.05);
+        }
+
+        /* ================= SECTIONS ================= */
+
+        section {
+            padding: 80px 60px;
+
+            text-align: center;
+        }
+
+        section h2 {
+            font-size: 32px;
+
+            margin-bottom: 30px;
+
+            color: #9c27b0;
+
+            font-weight: 700;
+        }
+
+        section p {
+            max-width: 800px;
+
+            margin: 0 auto 40px;
+
+            color: #555;
+        }
+
+        /* ================= ABOUT ================= */
+
+        .about img {
+            width: 100%;
+
+            max-width: 600px;
+
+            border-radius: 10px;
+
+            transition: transform 0.3s ease;
+        }
+
+        .about img:hover {
+            transform: scale(1.03);
+        }
+
+        /* ================= SAFETY TIPS ================= */
+
+        .tips-section {
+            background: #fff7fb;
+        }
+
+        .tips {
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 30px;
+        }
+
+        .tip-card {
+            background: #f8f8f8;
+
+            border-radius: 15px;
+
+            padding: 30px;
+
+            width: 300px;
+
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.1);
+
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-10px);
+
+            background: #ffe4ec;
+        }
+
+        .tip-card h3 {
+            color: #9c27b0;
+
+            margin-bottom: 10px;
+        }
+
+        .tip-card p {
+            margin-bottom: 0;
+        }
+
+        /* ================= EMERGENCY ================= */
+
+        .emergency {
+            background:
+                linear-gradient(
+                    90deg,
+                    #9c27b0,
+                    #ff4081
+                );
+
+            color: #fff;
+        }
+
+        .emergency h2 {
+            color: #fff;
+        }
+
+        .emergency > p {
+            color: #fff;
+        }
+
+        .contacts {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            justify-content: center;
+
+            gap: 30px;
+
+            margin-top: 30px;
+        }
+
+        .contact-box {
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            padding: 20px 40px;
+
+            border-radius: 10px;
+
+            transition: all 0.3s ease;
+        }
+
+        .contact-box:hover {
+            background:
+                rgba(255, 255, 255, 0.3);
+
+            transform: translateY(-5px);
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #222;
+
+            color: #bbb;
+
+            text-align: center;
+
+            padding: 20px 0;
+
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #ff4081;
+
+            text-decoration: none;
+
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            header {
+                padding: 15px 25px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+
+            nav ul li {
+                margin-left: 12px;
+            }
+
+            nav ul li a,
+            details summary {
+                font-size: 13px;
+            }
+
+            .map-section {
+                padding: 20px;
+            }
+
+            section {
+                padding: 60px 25px;
+            }
+
+            .hero-content h2 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            header {
+                position: relative;
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+
+                justify-content: center;
+
+                gap: 8px;
+            }
+
+            nav ul li {
+                margin-left: 8px;
+            }
+
+            .map-section {
+                margin-top: 0;
+
+                padding: 15px;
+            }
+
+            #map {
+                height: 400px;
+            }
+
+            .hero-content h2 {
+                font-size: 30px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+        }
+        /* ================= ROUTE SEARCH ================= */
+
+.route-panel {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.10);
+}
+
+.route-panel h3 {
+    color: #9c27b0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.route-input {
+    display: flex;
+    gap: 10px;
+}
+
+.route-input input {
+    flex: 1;
+    padding: 13px 16px;
+    border: 2px solid #e1bee7;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+}
+
+.route-input input:focus {
+    border-color: #9c27b0;
+}
+
+.route-input button {
+    padding: 13px 22px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(
+        90deg,
+        #ff4081,
+        #9c27b0
+    );
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.route-input button:hover {
+    transform: translateY(-2px);
+}
+
+#routeStatus {
+    margin-top: 12px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+@media (max-width: 650px) {
+
+    .route-input {
+        flex-direction: column;
+    }
+
+    .route-input button {
+        width: 100%;
+    }
+
+}
+/* ================= SAFETY VIBE ================= */
+
+.safety-panel {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+}
+
+.safety-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.safety-header h3 {
+    color: #9c27b0;
+    margin-bottom: 3px;
+}
+
+.safety-header p {
+    color: #777;
+    font-size: 13px;
+}
+
+.safety-score {
+    font-size: 30px;
+    font-weight: 700;
+    color: #2e7d32;
+    white-space: nowrap;
+}
+
+.safety-bar {
+    height: 14px;
+    background: #eeeeee;
+    border-radius: 20px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+#safetyBar {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    transition: width 0.8s ease;
+    background: #4caf50;
+}
+
+.safety-factors {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.factor {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px;
+    background: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #eeeeee;
+}
+
+.factor strong {
+    color: #2e7d32;
+}
+
+.safety-recommendation {
+    margin-top: 18px;
+    padding: 15px;
+    background: #f3e5f5;
+    color: #6a1b9a;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.report-button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #ff5252;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.report-button:hover {
+    background: #e53935;
+}
+
+@media (max-width: 650px) {
+
+    .safety-header {
+        flex-direction: column;
         text-align: center;
-      }
-      .hero h1 {
-        font-size: clamp(32px, 5vw, 52px);
-        margin-bottom: 12px;
-      }
-      .hero p {
+    }
+
+    .safety-factors {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =========================================================
+   HERROUTE MODERN LIGHT / DARK THEME
+   UI/UX ONLY — DOES NOT CHANGE FUNCTIONALITY
+   ========================================================= */
+
+/* ---------- Theme Variables ---------- */
+
+:root {
+    --bg-main: #f6f7fb;
+    --bg-card: #ffffff;
+    --bg-secondary: #f1f3f7;
+
+    --text-main: #252525;
+    --text-secondary: #6b7280;
+
+    --border: #e5e7eb;
+
+    --primary: #7c3aed;
+    --primary-light: #ede9fe;
+
+    --header-bg: rgba(255, 255, 255, 0.95);
+
+    --shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
+
+    --route-1: #2563eb;
+    --route-2: #f59e0b;
+    --route-3: #db2777;
+
+    --safe: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
+
+/* ---------- Dark Theme ---------- */
+
+body.dark-theme {
+    --bg-main: #111318;
+    --bg-card: #1b1e26;
+    --bg-secondary: #242832;
+
+    --text-main: #f3f4f6;
+    --text-secondary: #aeb4c0;
+
+    --border: #343945;
+
+    --primary: #a78bfa;
+    --primary-light: #2d2544;
+
+    --header-bg: rgba(20, 22, 28, 0.96);
+
+    --shadow:
+        0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ---------- Main Page ---------- */
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+
+/* ---------- Header ---------- */
+
+header {
+    background: var(--header-bg) !important;
+
+    color: var(--text-main) !important;
+
+    backdrop-filter: blur(12px);
+
+    border-bottom:
+        1px solid var(--border);
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+header h1 {
+    color: var(--primary);
+}
+
+nav ul li a,
+details summary {
+    color: var(--text-main) !important;
+}
+
+nav ul li a:hover,
+details summary:hover {
+    color: var(--primary) !important;
+}
+
+
+/* ---------- Map Section ---------- */
+
+.map-section {
+    background: var(--bg-main) !important;
+}
+
+.map-title h2 {
+    color: var(--primary);
+}
+
+.map-title p {
+    color: var(--text-secondary);
+}
+
+
+/* ---------- Location Status ---------- */
+
+.location-status {
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+
+    border:
+        1px solid var(--border);
+}
+
+
+/* ---------- Route Panel ---------- */
+
+.route-panel {
+    background: var(--bg-card);
+
+    color: var(--text-main);
+
+    border:
+        1px solid var(--border);
+
+    box-shadow: var(--shadow);
+
+    transition:
+        background 0.3s ease,
+        border 0.3s ease;
+}
+
+.route-panel h3 {
+    color: var(--primary);
+}
+
+.route-input input {
+    background: var(--bg-card);
+    color: var(--text-main);
+
+    border-color: var(--border);
+}
+
+.route-input input::placeholder {
+    color: var(--text-secondary);
+}
+
+.route-input button {
+    background: var(--primary);
+}
+
+.route-input button:hover {
+    background: #6d28d9;
+}
+
+
+/* ---------- Safety Panel ---------- */
+
+.safety-panel {
+    background: var(--bg-card);
+
+    color: var(--text-main);
+
+    border:
+        1px solid var(--border);
+
+    box-shadow: var(--shadow);
+}
+
+.safety-header h3 {
+    color: var(--primary);
+}
+
+.safety-header p {
+    color: var(--text-secondary);
+}
+
+.safety-bar {
+    background: var(--bg-secondary);
+}
+
+
+/* ---------- Safety Factors ---------- */
+
+.factor {
+    background: var(--bg-secondary);
+
+    border:
+        1px solid var(--border);
+
+    color: var(--text-main);
+}
+
+.factor strong {
+    color: var(--safe);
+}
+
+
+/* ---------- Recommendation ---------- */
+
+.safety-recommendation {
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border:
+        1px solid var(--border);
+}
+
+
+/* ---------- Report Button ---------- */
+
+.report-button {
+    background: var(--danger);
+}
+
+.report-button:hover {
+    background: #b91c1c;
+}
+
+
+/* ---------- Route Status ---------- */
+
+#routeStatus {
+    color: var(--text-secondary);
+}
+
+
+/* ---------- Submenu ---------- */
+
+details ul.submenu {
+    background: var(--bg-card);
+
+    border:
+        1px solid var(--border);
+
+    box-shadow: var(--shadow);
+}
+
+details ul.submenu li a {
+    color: var(--text-main);
+}
+
+details ul.submenu li a:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+
+/* ---------- Hero ---------- */
+
+.hero {
+    background-color: var(--bg-secondary);
+}
+
+
+/* ---------- General Sections ---------- */
+
+section {
+    background: var(--bg-main);
+}
+
+section p {
+    color: var(--text-secondary);
+}
+
+section h2 {
+    color: var(--primary);
+}
+
+
+/* ---------- About ---------- */
+
+.about {
+    background: var(--bg-card);
+}
+
+
+/* ---------- Safety Tips ---------- */
+
+.tips-section {
+    background: var(--bg-main);
+}
+
+.tip-card {
+    background: var(--bg-card);
+
+    color: var(--text-main);
+
+    border:
+        1px solid var(--border);
+
+    box-shadow: var(--shadow);
+}
+
+.tip-card h3 {
+    color: var(--primary);
+}
+
+.tip-card p {
+    color: var(--text-secondary);
+}
+
+.tip-card:hover {
+    background: var(--primary-light);
+}
+
+
+/* ---------- Emergency ---------- */
+
+.emergency {
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #db2777
+        );
+}
+
+
+/* ---------- Footer ---------- */
+
+footer {
+    background: #0d0f13;
+
+    color: #9ca3af;
+}
+
+
+/* ---------- Route Result Cards ---------- */
+
+.route-result-card {
+    background: var(--bg-card);
+
+    border:
+        1px solid var(--border);
+
+    color: var(--text-main);
+}
+
+
+/* ---------- Incident Marker ---------- */
+
+.incident-marker {
+    font-size: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    filter:
+        drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+}
+
+
+/* ---------- Theme Toggle ---------- */
+
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: var(--bg-secondary);
+
+    color: var(--text-main);
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        all 0.25s ease;
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.05);
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 650px) {
+
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+
         font-size: 18px;
-        line-height: 1.7;
-      }
-      .button {
-        display: inline-block;
-        margin-top: 18px;
-        padding: 14px 25px;
-        border-radius: 30px;
-        background: #e91e63;
-        color: white;
-        text-decoration: none;
-      }
-      .features {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        padding: 0 7% 60px;
-      }
-      .feature {
-        background: white;
-        padding: 25px;
-        border-radius: 16px;
-        box-shadow: 0 5px 20px #e8cddd;
-        width: 280px;
-      }
-      footer {
-        text-align: center;
-        padding: 20px;
-        background: #f3e1ed;
-      }
+    }
+
+}
+/* =========================
+   LIGHT / DARK THEME
+   ========================= */
+
+:root {
+    --bg-main: #ffffff;
+    --bg-card: #ffffff;
+    --bg-secondary: #f8fafc;
+
+    --text-main: #1f2937;
+    --text-secondary: #6b7280;
+
+    --border-color: #e5e7eb;
+
+    --input-bg: #ffffff;
+    --input-text: #1f2937;
+}
+
+/* DARK THEME */
+
+body.dark-theme {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-secondary: #111827;
+
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+
+    --border-color: #334155;
+
+    --input-bg: #1e293b;
+    --input-text: #f8fafc;
+}
+
+
+/* BODY */
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+
+/* HEADINGS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-main);
+}
+
+
+/* PARAGRAPHS */
+
+p {
+    color: var(--text-secondary);
+}
+
+
+/* CARDS */
+
+.card,
+.route-card,
+.route-panel,
+.safety-panel,
+.info-card,
+.safety-card {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
+
+
+/* INPUTS */
+
+input,
+textarea,
+select {
+    background: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--border-color);
+}
+
+
+/* PLACEHOLDER TEXT */
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+
+/* ROUTE SUMMARY */
+
+.route-summary {
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+}
+
+
+/* =========================
+   THEME TOGGLE BUTTON
+   ========================= */
+
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--bg-card);
+    color: var(--text-main);
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.08);
+}
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================
+   LEAFLET POPUPS
+   ========================= */
+
+body.dark-theme .leaflet-popup-content-wrapper {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+body.dark-theme .leaflet-popup-tip {
+    background: #1e293b;
+}
+
+body.dark-theme .leaflet-popup-content {
+    color: #f8fafc;
+}
+
+
+/* =========================
+   LEAFLET CONTROLS
+   ========================= */
+
+body.dark-theme .leaflet-control-zoom a {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+body.dark-theme .leaflet-control-zoom a:hover {
+    background: #334155;
+}
+
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+button {
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+/* =========================
+   LINKS
+   ========================= */
+
+body.dark-theme a {
+    color: #93c5fd;
+}
+
+
+/* =========================
+   FOOTER
+   ========================= */
+
+body.dark-theme footer {
+    background: #020617;
+    color: #f8fafc;
+}
+
+body.dark-theme footer p {
+    color: #cbd5e1;
+}
+
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+body.dark-theme header {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+body.dark-theme nav a {
+    color: #f8fafc;
+}
+
+body.dark-theme nav a:hover {
+    color: #93c5fd;
+}
+.route-label {
+    background: white;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme .route-label {
+    background: #1e293b;
+    border-color: #60a5fa;
+    color: #f8fafc;
+}
+/* ================================
+   REPORT UNSAFE AREA FORM
+================================ */
+
+.report-form {
+    display: none;
+    margin-top: 15px;
+    padding: 20px;
+    border-radius: 16px;
+
+    background: var(--bg-card);
+    color: var(--text-main);
+
+    border: 1px solid var(--border-color);
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
+
+
+/* Header */
+
+.report-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.report-form-header h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-main);
+    font-size: 20px;
+}
+
+.report-form-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+
+/* Close button */
+
+.report-close-btn {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--bg-secondary);
+    color: var(--text-main);
+
+    cursor: pointer;
+    font-size: 15px;
+
+    transition: 0.2s ease;
+}
+
+.report-close-btn:hover {
+    transform: scale(1.08);
+}
+
+
+/* Location */
+
+.report-location {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    padding: 12px;
+
+    margin-bottom: 18px;
+
+    border-radius: 10px;
+
+    background: var(--bg-secondary);
+
+    border: 1px solid var(--border-color);
+}
+
+.location-icon {
+    font-size: 23px;
+}
+
+.report-location strong {
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.report-location p {
+    margin: 3px 0 0;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+}
+
+
+/* Labels */
+
+.report-form label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--text-main);
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* Select + textarea */
+
+.report-form select,
+.report-form textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    margin-bottom: 15px;
+
+    border-radius: 9px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--input-bg);
+
+    color: var(--input-text);
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.report-form select:focus,
+.report-form textarea:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+
+.report-form textarea {
+    resize: vertical;
+}
+
+
+/* Buttons */
+
+.report-form-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 5px;
+}
+
+
+.submit-report-btn {
+
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #dc2626;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.submit-report-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+.submit-report-btn:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+.cancel-report-btn {
+
+    flex: 1;
+
+    padding: 11px;
+
+    border-radius: 9px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--bg-secondary);
+
+    color: var(--text-main);
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    
+    cursor: pointer;
+}
+.sos-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #dc2626;
+    color: white;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.sos-button:hover {
+    transform: translateY(-1px);
+}
+.emergency-panel {
+    display: none;
+    margin-top: 15px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.emergency-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.emergency-header h3 {
+    margin: 0 0 5px;
+    color: var(--text-main);
+}
+
+.emergency-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.emergency-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.emergency-panel label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.emergency-panel input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px;
+    margin-bottom: 15px;
+    border-radius: 9px;
+    border: 1px solid var(--border-color);
+}
+
+.save-contact-btn,
+.send-sos-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.save-contact-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.send-sos-btn {
+    margin-top: 12px;
+    background: #dc2626;
+    color: white;
+    font-size: 16px;
+    width: 100%;
+padding: 14px;
+min-height: 50px;
+box-sizing: border-box;
+display: block;
+}
+
+.saved-contact {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 9px;
+    background: var(--bg-secondary);
+    color: var(--text-main);
+    font-size: 14px;
+}
+.emergency-call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+
+    padding: 16px 28px;
+    min-width: 220px;
+
+    background: #ffffff;
+    color: #7c2d92;
+
+    border-radius: 14px;
+    text-decoration: none;
+
+    font-weight: 700;
+    cursor: pointer;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+    transition: all 0.2s ease;
+}
+
+.emergency-call:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
+}
+
+.emergency-call:active {
+    transform: scale(0.96);
+}
+
+.call-icon {
+    font-size: 28px;
+}
+
+.emergency-call strong {
+    display: block;
+    font-size: 16px;
+}
+
+.emergency-call small {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #dc2626;
+}
+#emergencyPanel {
+    position: fixed;
+    top: 145px;
+    right: 30px;
+
+    width: 520px;
+    max-width: calc(100vw - 40px);
+
+    max-height: calc(100vh - 165px);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+
+    z-
+    .saved-contact {
+    margin-top: 16px;
+}
+
+.saved-contact-title {
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.saved-contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.contact-details strong {
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.contact-details span {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.delete-contact-btn {
+    border: none;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.delete-contact-btn:hover {
+    background: #fecaca;
+}
+
+.no-contacts {
+    padding: 15px;
+    text-align: center;
+    color: #64748b;
+    background: #f8fafc;
+    border-radius: 12px;
+}index: 9999;
+}
     </style>
-  </head>
-  <body>
+</head>
+
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
     <header>
-      <h2>🛡️ HerRoute</h2>
-      <nav>
-        <a href="/">Home</a>
-        <a href="#about">About</a>
-        <a href="/api/safety/score/">Safety API</a>
-        <a href="/admin/">Admin</a>
-      </nav>
+
+        <h1>HerRoute</h1>
+
+        <nav>
+
+            <ul>
+
+                <li>
+                   <button
+    id="themeToggle"
+    class="theme-toggle"
+    type="button"
+    title="Switch to dark mode"
+>
+    🌙
+</button>
+                </li>
+
+            <li>
+                <button
+    id="sosButton"
+    type="button"
+    onclick="openEmergencyPanel()"
+    class="sos-button"
+>
+    🚨 SOS
+     <audio id="sosMusic" loop>
+    <source src="/static/audio/background.mp3" type="audio/mpeg">
+</audio>
+</button>
+    
+   
+<div id="emergencyPanel" class="emergency-panel">
+
+    <div class="emergency-header">
+        <div>
+            <h3>🚨 Emergency Contact</h3>
+            <p>Send your current location to someone you trust.</p>
+        </div>
+
+        <button
+            type="button"
+            class="emergency-close"
+            onclick="closeEmergencyPanel()"
+        >
+            ✕
+        </button>
+    </div>
+
+    <label for="emergencyName">Contact Name</label>
+    <input
+        type="text"
+        id="emergencyName"
+        placeholder="e.g. Mom"
+    >
+
+    <label for="emergencyPhone">Phone Number</label>
+    <input
+        type="tel"
+        id="emergencyPhone"
+        placeholder="e.g. +919876543210"
+    >
+
+    <button
+        type="button"
+        class="save-contact-btn"
+        onclick="saveEmergencyContact()"
+    >
+        💾 Save Emergency Contact
+    </button>
+
+    <div id="savedContact" class="saved-contact"></div>
+
+
+    <button
+        type="button"
+        id="sendSOSBtn"
+        
+        class="send-sos-btn"
+        onclick="sendEmergencySOS()"
+    >🚨 SEND SOS
+</button>
+   
+
+</div>
+
+        </li>
+            
+            </ul>
+
+        </nav>
+
     </header>
 
-    <section class="hero">
-      <h1>Safer Routes. Safer Journeys.</h1>
-      <p>
-        Plan your journey with safety-aware route information, community
-        reports, and emergency support.
-      </p>
-      <a class="button" href="#features">Explore HerRoute</a>
+
+    <!-- ================= MAP ================= -->
+<!-- ================= MAP ================= -->
+
+<div class="map-section">
+
+    <div class="map-title">
+
+        <h2>
+            🛡️ HerRoute Safety Map
+        </h2>
+
+        <p>
+            Find your location and explore safer walking routes.
+        </p>
+
+    </div>
+
+
+    <!-- ONE MAP ONLY -->
+    <div id="map"></div>
+
+
+    <!-- LOCATION STATUS -->
+
+    <div
+        class="location-status"
+        id="locationStatus"
+    >
+        📍 Getting your current location...
+    </div>
+
+
+    <!-- ROUTE SEARCH -->
+
+    <div class="route-panel">
+
+        <h3>
+            🛡️ Find a Safer Route
+        </h3>
+
+        <div class="route-input">
+
+            <input
+                type="text"
+                id="destinationInput"
+                placeholder="Enter your destination..."
+            >
+
+            <button onclick="findRoute()">
+                🔍 Find Route
+            </button>
+
+        </div>
+
+        <div id="routeStatus">
+            Enter a destination to find a walking route.
+        </div>
+
+    </div>
+
+
+    <!-- SAFETY VIBE -->
+
+    <div
+        id="safetyPanel"
+        class="safety-panel"
+        style="display:none;"
+    >
+
+        <div class="safety-header">
+
+            <div>
+
+                <h3>
+                    🛡️ HerRoute Safety Vibe
+                </h3>
+
+                <p>
+                    Estimated safety conditions for this route
+                </p>
+
+            </div>
+
+            <div
+                id="safetyScore"
+                class="safety-score"
+            >
+                0/100
+            </div>
+
+        </div>
+<div id="reportForm" class="report-form">
+
+    <div class="report-form-header">
+        <div>
+            <h3>⚠️ Report Unsafe Area</h3>
+            <p>Help make HerRoute safer for everyone.</p>
+        </div>
+
+        <button
+            type="button"
+            class="report-close-btn"
+            onclick="closeReportForm()"
+        >
+            ✕
+        </button>
+    </div>
+
+
+    <!-- Location -->
+    <div class="report-location">
+        <span class="location-icon">📍</span>
+
+        <div>
+            <strong>Current Location</strong>
+            <p id="reportLocationText">
+                Your GPS location will be attached automatically.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Incident Type -->
+    <label for="incidentType">
+        Incident Type
+    </label>
+
+    <select id="incidentType">
+
+        <option value="unsafe">
+            Unsafe Area
+        </option>
+
+        <option value="poor_lighting">
+            Poor Lighting
+        </option>
+
+        <option value="harassment">
+            Harassment
+        </option>
+
+        <option value="suspicious">
+            Suspicious Activity
+        </option>
+
+        <option value="crowd">
+            Crowd Issue
+        </option>
+
+        <option value="other">
+            Other
+        </option>
+
+    </select>
+
+
+    <!-- Severity -->
+    <label for="incidentSeverity">
+        Severity
+    </label>
+
+    <select id="incidentSeverity">
+
+        <option value="1">
+            Low
+        </option>
+
+        <option value="2" selected>
+            Medium
+        </option>
+
+        <option value="3">
+            High
+        </option>
+
+    </select>
+
+
+    <!-- Description -->
+    <label for="incidentDescription">
+        Description
+    </label>
+
+    <textarea
+        id="incidentDescription"
+        rows="4"
+        placeholder="Describe what happened or why this area feels unsafe..."
+    ></textarea>
+
+
+    <!-- Buttons -->
+    <div class="report-form-actions">
+
+        <button
+            type="button"
+            class="submit-report-btn"
+            id="submitReportBtn"
+            onclick="submitUnsafeReport()"
+        >
+            ⚠️ Submit Report
+        </button>
+
+        <button
+            type="button"
+            class="cancel-report-btn"
+            onclick="closeReportForm()"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+        <div class="safety-bar">
+
+            <div id="safetyBar"></div>
+
+        </div>
+
+
+        <div class="safety-factors">
+
+            <div class="factor">
+
+                <span>
+                    💡 Street Lighting
+                </span>
+
+                <strong id="lightingScore">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="factor">
+
+                <span>
+                    🏪 Open Establishments
+                </span>
+
+                <strong id="shopScore">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="factor">
+
+                <span>
+                    👥 Crowd Activity
+                </span>
+
+                <strong id="crowdScore">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="factor">
+
+                <span>
+                    ⚠️ Recent Reports
+                </span>
+
+                <strong id="reportScore">
+                    --
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="safetyRecommendation"
+            class="safety-recommendation"
+        >
+        </div>
+<!-- REPORT UNSAFE AREA BUTTON -->
+
+<button
+    id="reportUnsafeBtn"
+    type="button"
+    onclick="openReportForm()"
+    style="
+        width:100%;
+        margin-top:15px;
+        padding:12px 18px;
+        border:none;
+        border-radius:10px;
+        background:#dc2626;
+        color:white;
+        font-size:15px;
+        font-weight:700;
+        cursor:pointer;
+    "
+>
+    ⚠️ Report Unsafe Area
+</button>
+
+
+<!-- REPORT FORM -->
+
+<div id="reportForm" class="report-form">
+
+    <div class="report-form-header">
+
+        <div>
+
+            <h3>
+                ⚠️ Report Unsafe Area
+            </h3>
+
+            <p>
+                Help make HerRoute safer for everyone.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="report-close-btn"
+            onclick="closeReportForm()"
+        >
+            ✕
+        </button>
+
+    </div>
+
+
+    <!-- Location -->
+
+    <div class="report-location">
+
+        <span class="location-icon">
+            📍
+        </span>
+
+        <div>
+
+            <strong>
+                Current Location
+            </strong>
+
+            <p id="reportLocationText">
+                Your GPS location will be attached automatically.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Incident Type -->
+
+    <label for="incidentType">
+        Incident Type
+    </label>
+
+    <select id="incidentType">
+
+        <option value="unsafe">
+            Unsafe Area
+        </option>
+
+        <option value="poor_lighting">
+            Poor Lighting
+        </option>
+
+        <option value="harassment">
+            Harassment
+        </option>
+
+        <option value="suspicious">
+            Suspicious Activity
+        </option>
+
+        <option value="crowd">
+            Crowd Issue
+        </option>
+
+        <option value="other">
+            Other
+        </option>
+
+    </select>
+
+
+    <!-- Severity -->
+
+    <label for="incidentSeverity">
+        Severity
+    </label>
+
+    <select id="incidentSeverity">
+
+        <option value="1">
+            Low
+        </option>
+
+        <option value="2" selected>
+            Medium
+        </option>
+
+        <option value="3">
+            High
+        </option>
+
+    </select>
+
+
+    <!-- Description -->
+
+    <label for="incidentDescription">
+        Description
+    </label>
+
+    <textarea
+        id="incidentDescription"
+        rows="4"
+        placeholder="Describe what happened or why this area feels unsafe..."
+    ></textarea>
+
+
+    <!-- Buttons -->
+
+    <div class="report-form-actions">
+
+        <button
+            type="button"
+            class="submit-report-btn"
+            id="submitReportBtn"
+            onclick="submitUnsafeReport()"
+        >
+            ⚠️ Submit Report
+        </button>
+
+        <button
+            type="button"
+            class="cancel-report-btn"
+            onclick="closeReportForm()"
+        >
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+    </div>
+
+</div> 
+    <!-- ================= HERO ================= -->
+
+  
+    <!-- ================= ABOUT ================= -->
+
+    <section
+        class="about"
+        id="about"
+    >
+
+        <h2>
+            About HerRoute
+        </h2>
+
+        <p>
+            HerRoute is a crowd-aware pedestrian safety platform
+            designed to help users choose safer walking paths.
+            Instead of considering distance alone, HerRoute
+            considers environmental and community safety signals.
+        </p>
+
+      
+
     </section>
 
-    <section class="features" id="features">
-      <div class="feature">
-        <h3>🗺️ Safety-Aware Routes</h3>
-        <p>
-          Our goal is to compare routes using safety-related factors, not
-          distance alone.
-        </p>
-      </div>
-      <div class="feature">
-        <h3>📍 Community Reports</h3>
-        <p>
-          Build a community reporting system for recent incidents and route
-          conditions.
-        </p>
-      </div>
-      <div class="feature">
-        <h3>🆘 Emergency Support</h3>
-        <p>Plan for emergency contact sharing and a one-tap SOS feature.</p>
-      </div>
+
+    <!-- ================= SAFETY TIPS ================= -->
+
+    <section
+        class="tips-section"
+        id="tips"
+    >
+
+        <h2>
+            Safety Tips
+        </h2>
+
+        <div class="tips">
+
+            <div class="tip-card">
+
+                <h3>
+                    Stay Connected
+                </h3>
+
+                <p>
+                    Always share your location or travel plans
+                    with someone you trust when going out alone.
+                </p>
+
+            </div>
+
+
+            <div class="tip-card">
+
+                <h3>
+                    Emergency Numbers
+                </h3>
+
+                <p>
+                    Keep emergency contact numbers saved
+                    for quick access when needed.
+                </p>
+
+            </div>
+
+
+            <div class="tip-card">
+
+                <h3>
+                    Trust Your Instincts
+                </h3>
+
+                <p>
+                    If you ever feel uncomfortable,
+                    leave the situation and seek help.
+                </p>
+
+            </div>
+
+        </div>
+
     </section>
+
+
+    <!-- ================= EMERGENCY ================= -->
+
+    <section
+        class="emergency"
+        id="emergency"
+    >
+
+        <h2>
+            Emergency Contacts
+        </h2>
+
+        <p>
+            Reach out immediately if you or someone you know
+            is in danger.
+        </p>
+
+        <div class="contacts">
+<a href="tel:100" class="emergency-call">
+    <span class="call-icon">📞</span>
+    <span>
+        <strong>Police Helpline</strong>
+        <small>CALL 100</small>
+    </span>
+</a>
+
+<a href="tel:1091" class="emergency-call">
+    <span class="call-icon">📞</span>
+    <span>
+        <strong>Women Helpline</strong>
+        <small>CALL 1091</small>
+    </span>
+</a>
+
+<a href="tel:181" class="emergency-call">
+    <span class="call-icon">📞</span>
+    <span>
+        <strong>National Helpline</strong>
+        <small>CALL 181</small>
+    </span>
+</a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
 
     <footer>
-      HerRoute — Walk with greater awareness.
-      <br />Safety estimates are not guarantees of personal safety.
+
+        <p>
+
+            © 2026 HerRoute |
+            Designed for a safer tomorrow |
+
+            <a href="#">
+                Contact Us
+            </a>
+
+        </p>
+
     </footer>
-  </body>
+
+
+    <!-- ================= NOTIFICATIONS ================= -->
+
+    {% if notifications %}
+
+        {{ notifications|json_script:"notifications-data" }}
+
+        <script>
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+
+                    const dataElement =
+                        document.getElementById(
+                            "notifications-data"
+                        );
+
+                    if (!dataElement) {
+                        return;
+                    }
+
+                    const data =
+                        JSON.parse(
+                            dataElement.textContent
+                        );
+
+
+                    data.forEach(function (notification) {
+
+                        if (!notification.is_read) {
+
+                            const shownKey =
+                                `notif_shown_${notification.id}`;
+
+
+                            /*
+                             * Prevent the same notification
+                             * from repeatedly appearing.
+                             */
+
+                            if (
+                                localStorage.getItem(
+                                    shownKey
+                                )
+                            ) {
+                                return;
+                            }
+
+
+                            localStorage.setItem(
+                                shownKey,
+                                "1"
+                            );
+
+
+                            const popupTimeout =
+                                setTimeout(
+                                    function () {
+
+                                        alert(
+                                            "⚠️ Safety confirmation time expired!"
+                                        );
+
+                                    },
+                                    60000
+                                );
+
+
+                            if (
+                                confirm(
+                                    notification.message
+                                )
+                            ) {
+
+                                clearTimeout(
+                                    popupTimeout
+                                );
+
+
+                                fetch(
+                                    `/mark_notification_read/${notification.id}/`,
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "X-CSRFToken":
+                                                getCookie(
+                                                    "csrftoken"
+                                                )
+                                        }
+                                    }
+                                )
+                                .then(function (response) {
+
+                                    if (response.ok) {
+
+                                        console.log(
+                                            `Notification ${notification.id} marked as read.`
+                                        );
+
+                                    }
+
+                                })
+                                .catch(function (error) {
+
+                                    console.error(
+                                        "Notification error:",
+                                        error
+                                    );
+
+                                });
+
+                            }
+
+                        }
+
+                    });
+
+                }
+            );
+
+
+            /*
+             * Get Django CSRF cookie
+             */
+
+            function getCookie(name) {
+
+                let cookieValue = null;
+
+                if (
+                    document.cookie &&
+                    document.cookie !== ""
+                ) {
+
+                    const cookies =
+                        document.cookie.split(";");
+
+
+                    for (
+                        let cookie of cookies
+                    ) {
+
+                        cookie = cookie.trim();
+
+
+                        if (
+                            cookie.startsWith(
+                                name + "="
+                            )
+                        ) {
+
+                            cookieValue =
+                                decodeURIComponent(
+                                    cookie.substring(
+                                        name.length + 1
+                                    )
+                                );
+
+                            break;
+
+                        }
+
+                    }
+
+                }
+
+                return cookieValue;
+
+            }
+
+        </script>
+
+    {% endif %}
+
+
+    <!-- ================= LEAFLET JS ================= -->
+
+    <!-- IMPORTANT:
+         Leaflet must load BEFORE our map JavaScript.
+    -->
+
+    <script
+      
+    src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+
+    ></script>
+<!-- ================= MAP JAVASCRIPT ================= -->
+<script>
+
+/* =========================================================
+   HERROUTE
+   MAP + LOCATION + MAX 3 ROUTES
+   + DJANGO SAFETY VIBE
+   + ROUTE SAFETY INCIDENTS
+   + LIGHT / DARK THEME
+   ========================================================= */
+
+
+/* =========================================================
+   1. CREATE MAP
+   ========================================================= */
+
+const map = L.map("map").setView(
+    [11.2588, 75.7804],
+    14
+);
+
+
+/* =========================================================
+   2. MAP TILES
+   ========================================================= */
+
+L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    {
+        attribution:
+            "Tiles &copy; Esri | Esri, HERE, Garmin, OpenStreetMap contributors",
+
+        maxZoom: 19
+    }
+).addTo(map);
+
+
+/* =========================================================
+   3. LOCATION STATUS
+   ========================================================= */
+
+const locationStatus =
+    document.getElementById("locationStatus");
+
+
+/* =========================================================
+   4. GLOBAL VARIABLES
+   ========================================================= */
+
+let userMarker = null;
+
+let accuracyCircle = null;
+
+let destinationMarker = null;
+
+let routeLayers = [];
+
+let currentSafetyScore = 0;
+
+let displayedIncidentIds = new Set();
+
+let incidentMarkers = [];
+
+async function loadSavedIncidents() {
+
+    try {
+
+        const response = await fetch("/incidents/");
+
+        if (!response.ok) {
+            throw new Error(
+                `Incident loading failed: ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        console.log(
+            "✅ Saved incidents loaded:",
+            data.incidents
+        );
+
+        if (!data.incidents) {
+            return;
+        }
+
+        data.incidents.forEach(function(incident) {
+
+            showIncidentOnMap(incident);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "❌ Could not load saved incidents:",
+            error
+        );
+
+    }
+}
+/* =========================================================
+   5. GET USER LOCATION
+   ========================================================= */
+
+if (navigator.geolocation) {
+
+    locationStatus.innerHTML =
+        "📍 Requesting your location...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+            const accuracy =
+                position.coords.accuracy;
+
+
+            map.setView(
+                [
+                    latitude,
+                    longitude
+                ],
+                16
+            );
+
+
+            if (userMarker) {
+
+                map.removeLayer(userMarker);
+
+            }
+
+
+            userMarker =
+                L.marker(
+                    [
+                        latitude,
+                        longitude
+                    ]
+                )
+                .addTo(map);
+
+
+            userMarker.bindPopup(`
+                <strong>📍 You are here</strong>
+                <br>
+                HerRoute is tracking your location.
+            `);
+
+
+            userMarker.openPopup();
+
+
+            if (accuracyCircle) {
+
+                map.removeLayer(
+                    accuracyCircle
+                );
+
+            }
+
+
+            accuracyCircle =
+                L.circle(
+                    [
+                        latitude,
+                        longitude
+                    ],
+                    {
+                        radius: accuracy,
+
+                        color: "#9c27b0",
+
+                        fillColor: "#e1bee7",
+
+                        fillOpacity: 0.25
+                    }
+                )
+                .addTo(map);
+
+
+            locationStatus.innerHTML = `
+                📍 Location detected
+                <br>
+                Accuracy: approximately
+                ${Math.round(accuracy)} meters
+            `;
+
+        },
+
+
+        function(error) {
+
+            console.error(
+                "Geolocation error:",
+                error
+            );
+
+
+            locationStatus.innerHTML = `
+                ⚠️ Location access was not allowed.
+                <br>
+                The map is still available.
+            `;
+
+        },
+
+
+        {
+            enableHighAccuracy: true,
+
+            timeout: 10000,
+
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+else {
+
+    locationStatus.innerHTML = `
+        ⚠️ Geolocation is not supported
+        by this browser.
+    `;
+
+}
+
+loadSavedIncidents();
+/* =========================================================
+   6. CLEAR PREVIOUS ROUTES + INCIDENTS
+   ========================================================= */
+
+function clearRoutes() {
+
+    routeLayers.forEach(
+        function(layer) {
+
+            map.removeLayer(layer);
+
+        }
+    );
+
+
+    routeLayers = [];
+
+
+    incidentMarkers.forEach(
+        function(marker) {
+
+            map.removeLayer(marker);
+
+        }
+    );
+
+
+    incidentMarkers = [];
+
+
+    displayedIncidentIds.clear();
+
+}
+
+
+/* =========================================================
+   7. GET SAFETY SCORE FROM DJANGO
+   ========================================================= */
+/* =========================================================
+   SAFE ARRIVAL / JOURNEY PROTECTION
+   ========================================================= */
+
+let journeyTimer = null;
+let journeyActive = false;
+let journeyExpectedTime = null;
+async function getSafetyScore(routeCoordinates, routeNumber) {
+    const response = await fetch("/safety-score/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            coordinates: routeCoordinates,
+            route_number: routeNumber
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Safety API returned ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/* =========================================================
+   8. GET INCIDENTS NEAR ROUTE
+   ========================================================= */
+
+async function getRouteIncidents(routeCoordinates) {
+
+    const response =
+        await fetch(
+            "/route-incidents/",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    coordinates:
+                        routeCoordinates
+                })
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Incident API returned ${response.status}`
+        );
+
+    }
+
+
+    return await response.json();
+
+}
+
+
+/* =========================================================
+   9. ROUTE COLOR
+   ========================================================= */
+
+/*
+   All routes use the same color.
+   Safety score is still calculated and displayed,
+   but it does NOT control the route color.
+*/
+
+function getRouteColor(score) {
+
+    return "#2563eb";
+
+}
+
+
+/* =========================================================
+   10. GET SAFETY ICON
+   ========================================================= */
+
+function getSafetyIcon(score) {
+
+    score = Number(score) || 0;
+
+
+    if (score >= 80) {
+
+        return "🟢";
+
+    }
+
+
+    if (score >= 50) {
+
+        return "🟡";
+
+    }
+
+
+    return "🔴";
+
+}
+
+
+/* =========================================================
+   11. CREATE INCIDENT MARKER
+   ========================================================= */
+
+function showIncidentOnMap(incident) {
+
+    if (
+        displayedIncidentIds.has(
+            incident.id
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    displayedIncidentIds.add(
+        incident.id
+    );
+
+
+    const incidentIcon =
+        L.divIcon({
+
+            className:
+                "incident-marker",
+
+            html:
+                "⚠️",
+
+            iconSize:
+                [
+                    30,
+                    30
+                ],
+
+            iconAnchor:
+                [
+                    15,
+                    15
+                ]
+
+        });
+
+
+    const marker =
+        L.marker(
+            [
+                incident.latitude,
+                incident.longitude
+            ],
+            {
+                icon:
+                    incidentIcon
+            }
+        )
+        .addTo(map);
+
+
+    incidentMarkers.push(
+        marker
+    );
+
+
+    marker.bindPopup(`
+
+        <div style="
+            min-width:220px;
+            line-height:1.5;
+        ">
+
+            <strong style="
+                font-size:17px;
+                color:#d32f2f;
+            ">
+
+                ⚠️ Safety Alert
+
+            </strong>
+
+            <br><br>
+
+            <b>Type:</b>
+            ${incident.incident_type}
+
+            <br>
+
+            <b>Severity:</b>
+            ${incident.severity}/3
+
+            <br>
+
+            <b>Distance from route:</b>
+${
+    incident.distance !== undefined
+        ? incident.distance + " m"
+        : "Not calculated"
+}
+
+            <br>
+
+            <b>Reported:</b>
+            ${incident.age_hours} hours ago
+
+            <br>
+
+            <b>Description:</b>
+            ${
+                incident.description ||
+                "No description provided"
+            }
+
+        </div>
+
+    `);
+
+}
+
+
+/* =========================================================
+   12. FIND ROUTE
+   ========================================================= */
+
+async function findRoute() {
+
+    const destinationInput =
+        document.getElementById(
+            "destinationInput"
+        );
+
+
+    const routeStatus =
+        document.getElementById(
+            "routeStatus"
+        );
+
+
+    const destination =
+        destinationInput.value.trim();
+
+
+    if (!destination) {
+
+        routeStatus.innerHTML =
+            "⚠️ Please enter a destination.";
+
+        return;
+
+    }
+
+
+    if (!userMarker) {
+
+        routeStatus.innerHTML =
+            "⚠️ Waiting for your current location...";
+
+        return;
+
+    }
+
+
+    routeStatus.innerHTML =
+        "🔍 Finding destination...";
+
+
+    try {
+
+        /* =================================================
+           STEP 1 — GEOCODE DESTINATION
+           ================================================= */
+
+        const searchURL =
+            `https://nominatim.openstreetmap.org/search` +
+            `?format=json` +
+            `&limit=1` +
+            `&q=${encodeURIComponent(destination)}`;
+
+
+        const searchResponse =
+            await fetch(searchURL);
+
+
+        if (!searchResponse.ok) {
+
+            throw new Error(
+                "Destination search failed"
+            );
+
+        }
+
+
+        const searchData =
+            await searchResponse.json();
+
+
+        if (
+            !searchData ||
+            searchData.length === 0
+        ) {
+
+            routeStatus.innerHTML =
+                "❌ Destination not found.";
+
+            return;
+
+        }
+
+
+        const destinationLat =
+            parseFloat(
+                searchData[0].lat
+            );
+
+
+        const destinationLon =
+            parseFloat(
+                searchData[0].lon
+            );
+
+
+        /* =================================================
+           STEP 2 — GET CURRENT LOCATION
+           ================================================= */
+
+        const currentPosition =
+            userMarker.getLatLng();
+
+
+        const startLat =
+            currentPosition.lat;
+
+
+        const startLon =
+            currentPosition.lng;
+
+
+        /* =================================================
+           STEP 3 — REMOVE OLD ROUTES
+           ================================================= */
+
+        clearRoutes();
+
+
+        if (destinationMarker) {
+
+            map.removeLayer(
+                destinationMarker
+            );
+
+        }
+
+
+        /* =================================================
+           STEP 4 — CREATE DESTINATION MARKER
+           ================================================= */
+
+        destinationMarker =
+            L.marker(
+                [
+                    destinationLat,
+                    destinationLon
+                ]
+            )
+            .addTo(map);
+
+
+        destinationMarker.bindPopup(`
+            <strong>🏁 Destination</strong>
+            <br>
+            ${destination}
+        `);
+
+
+        destinationMarker.openPopup();
+
+
+        /* =================================================
+           STEP 5 — REQUEST WALKING ROUTES
+           ================================================= */
+
+        routeStatus.innerHTML =
+            "🛣️ Finding alternative walking routes...";
+
+
+        const routeURL =
+            `https://routing.openstreetmap.de/routed-foot/route/v1/driving/` +
+            `${startLon},${startLat};` +
+            `${destinationLon},${destinationLat}` +
+            `?overview=full` +
+            `&geometries=geojson` +
+            `&alternatives=true`;
+
+
+        console.log(
+            "Routing URL:",
+            routeURL
+        );
+
+
+        const response =
+            await fetch(routeURL);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Routing server returned ${response.status}`
+            );
+
+        }
+
+
+        const routeData =
+            await response.json();
+
+
+        console.log(
+            "Routing response:",
+            routeData
+        );
+
+
+        /* =================================================
+           STEP 6 — CHECK ROUTES
+           ================================================= */
+
+        if (
+            !routeData.routes ||
+            routeData.routes.length === 0
+        ) {
+
+            throw new Error(
+                "No walking routes found"
+            );
+
+        }
+
+
+        /*
+         * Maximum 3 routes.
+         */
+
+        const routes =
+            routeData.routes.slice(0, 3);
+
+
+        console.log(
+            "Number of routes returned:",
+            routes.length
+        );
+
+
+        /* =================================================
+           STEP 7 — GET DJANGO SAFETY SCORES
+           + GET INCIDENTS NEAR ROUTES
+           ================================================= */
+
+        routeStatus.innerHTML =
+            "🛡️ Calculating Safety Vibe...";
+
+
+        const routeResults = [];
+
+
+        for (
+            let i = 0;
+            i < routes.length;
+            i++
+        ) {
+
+           const route =
+    routes[i];
+
+
+const coordinates =
+    route.geometry.coordinates;
+
+
+try {
+
+    /* =========================================
+       7A — GET SAFETY SCORE
+       ========================================= */
+
+    const safety =
+        await getSafetyScore(
+            coordinates,
+            i + 1
+        );
+
+                /* =========================================
+                   7B — GET INCIDENTS
+                   ========================================= */
+
+                const incidentData =
+                    await getRouteIncidents(
+                        coordinates
+                    );
+
+
+                console.log(
+                    `Incidents near route ${i + 1}:`,
+                    incidentData.incidents
+                );
+
+
+                /* =========================================
+                   7C — SHOW INCIDENTS
+                   ========================================= */
+
+                if (
+                    incidentData.incidents &&
+                    Array.isArray(
+                        incidentData.incidents
+                    )
+                ) {
+
+                    incidentData.incidents.forEach(
+                        function(incident) {
+
+                            showIncidentOnMap(
+                                incident
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                /* =========================================
+                   7D — SAVE ROUTE RESULT
+                   ========================================= */
+
+                routeResults.push({
+
+                    route: route,
+
+                    safety: safety
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    `Safety calculation failed for route ${i + 1}:`,
+                    error
+                );
+
+
+                routeResults.push({
+
+                    route: route,
+
+                    safety: {
+
+                        score: 50,
+
+                        lighting: 50,
+
+                        establishments: 50,
+
+                        crowd: 50,
+
+                        recent_reports: 50
+
+                    }
+
+                });
+
+            }
+
+        }
+
+
+        /* =================================================
+           STEP 8 — EXTRACT SAFETY SCORES
+           ================================================= */
+
+        const safetyScores =
+            routeResults.map(
+                function(result) {
+
+                    return Number(
+                        result.safety.score
+                    ) || 0;
+
+                }
+            );
+
+
+        console.log(
+            "Django Safety Scores:",
+            safetyScores
+        );
+
+
+        /* =================================================
+           STEP 9 — FIND SAFEST ROUTE
+           ================================================= */
+
+        let safestRouteIndex = 0;
+
+
+        for (
+            let i = 1;
+            i < safetyScores.length;
+            i++
+        ) {
+
+            if (
+                safetyScores[i] >
+                safetyScores[safestRouteIndex]
+            ) {
+
+                safestRouteIndex = i;
+
+            }
+
+        }
+
+
+        console.log(
+            "Safest route:",
+            safestRouteIndex + 1
+        );
+
+
+        /* =================================================
+           STEP 10 — DRAW ROUTES
+           ================================================= */
+
+        routes.forEach(
+            function(route, index) {
+
+
+                /* -----------------------------------------
+                   Convert coordinates
+                   ----------------------------------------- */
+
+                const routeCoordinates =
+                    route.geometry.coordinates.map(
+                        function(coordinate) {
+
+                            const lon =
+                                coordinate[0];
+
+                            const lat =
+                                coordinate[1];
+
+                            return [
+                                lat,
+                                lon
+                            ];
+
+                        }
+                    );
+
+
+                /* -----------------------------------------
+                   Safety score
+                   ----------------------------------------- */
+
+                const score =
+                    safetyScores[index] ?? 50;
+
+
+                /* -----------------------------------------
+                   SAME COLOR FOR ALL ROUTES
+                   ----------------------------------------- */
+
+                const color =
+                    "#2563eb";
+
+
+                /* -----------------------------------------
+                   Safety icon
+                   ----------------------------------------- */
+
+                const safetyIcon =
+                    getSafetyIcon(score);
+
+
+                /* -----------------------------------------
+                   Route width
+                   ----------------------------------------- */
+
+                const weight =
+                    index === safestRouteIndex
+                        ? 8
+                        : 6;
+
+
+                /* -----------------------------------------
+                   Create route
+                   ----------------------------------------- */
+
+                const routeLayer =
+                    L.polyline(
+                        routeCoordinates,
+                        {
+                            color: color,
+
+                            weight: weight,
+
+                            opacity: 0.9
+                        }
+                    )
+                    .addTo(map);
+
+
+                routeLayers.push(
+                    routeLayer
+                );
+
+
+                /* -----------------------------------------
+                   Distance
+                   ----------------------------------------- */
+
+                const distanceKm =
+                    (
+                        route.distance / 1000
+                    ).toFixed(2);
+
+
+                /* -----------------------------------------
+                   Walking time
+                   ----------------------------------------- */
+
+                const walkingMinutes =
+                    Math.round(
+                        route.duration / 60
+                    );
+
+
+                /* -----------------------------------------
+                   Route name
+                   ----------------------------------------- */
+
+                const routeName =
+                    `Route ${index + 1}`;
+
+
+                /* -----------------------------------------
+                   Popup
+                   ----------------------------------------- */
+
+                routeLayer.bindPopup(`
+
+                    <div style="
+                        min-width:200px;
+                    ">
+
+                        <strong style="
+                            font-size:17px;
+                            color:#2563eb;
+                        ">
+
+                            🛣️
+                            ${routeName}
+
+                        </strong>
+
+                        <br><br>
+
+                        🛡️ Safety Vibe:
+                        <strong>
+                            ${score}/100
+                        </strong>
+
+                        <br>
+
+                        📏 Distance:
+                        ${distanceKm} km
+
+                        <br>
+
+                        🚶 Walking time:
+                        ${walkingMinutes} min
+
+                    </div>
+
+                `);
+
+
+                /* -----------------------------------------
+                   ROUTE LABEL ON MAP
+                   ----------------------------------------- */
+
+                routeLayer.bindTooltip(
+                    `Route ${index + 1}`,
+                    {
+                        permanent: true,
+                        direction: "center",
+                        className: "route-label"
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           STEP 11 — ROUTE SUMMARY
+           ================================================= */
+
+        routeStatus.innerHTML = `
+
+            <div style="
+                text-align:left;
+                margin-top:15px;
+            ">
+
+                <h3 style="
+                    color:#7b1fa2;
+                    margin-bottom:15px;
+                ">
+
+                    🛣️
+                    ${routes.length}
+                    Walking Route${routes.length > 1 ? "s" : ""}
+                    Found
+
+                </h3>
+
+
+                ${routes.map(
+                    function(route, index) {
+
+
+                        const score =
+                            safetyScores[index] ?? 50;
+
+
+                        const distanceKm =
+                            (
+                                route.distance / 1000
+                            ).toFixed(2);
+
+
+                        const walkingMinutes =
+                            Math.round(
+                                route.duration / 60
+                            );
+
+
+                        /* Same color for every route */
+
+                        const color =
+                            "#2563eb";
+
+
+                        const icon =
+                            "🛣️";
+
+
+                        const isSafest =
+                            index ===
+                            safestRouteIndex;
+
+
+                        return `
+
+                           <strong style="
+    font-size:18px;
+    color:${color};
+    display:flex;
+    align-items:center;
+    gap:8px;
+">
+
+    ${icon}
+
+    Route
+    ${index + 1}
+
+    ${
+        isSafest
+        ? `
+            <span style="
+                background:#dcfce7;
+                color:#15803d;
+                font-size:11px;
+                font-weight:700;
+                padding:4px 9px;
+                border-radius:999px;
+                letter-spacing:0.3px;
+            ">
+                SAFEST
+            </span>
+          `
+        : ""
+    }
+
+</strong>
+
+
+                                    <strong style="
+                                        color:${color};
+
+                                        font-size:20px;
+                                    ">
+
+                                        ${score}/100
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div style="
+                                    margin-top:8px;
+
+                                    color:
+                                        var(
+                                            --text-secondary,
+                                            #666
+                                        );
+
+                                    font-size:14px;
+                                ">
+
+                                    📏
+                                    ${distanceKm} km
+
+                                    &nbsp; | &nbsp;
+
+                                    🚶
+                                    ${walkingMinutes} min
+
+                                </div>
+
+
+                                ${
+                                    isSafest
+                                    ?
+                                    `
+
+                                        <div style="
+                                            margin-top:9px;
+
+                                            color:#2563eb;
+
+                                            font-weight:bold;
+                                        ">
+
+                                            ⭐ HIGHEST SAFETY SCORE
+
+                                        </div>
+
+                                    `
+                                    :
+                                    ""
+                                }
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("")}
+
+
+                ${
+                    routes.length < 3
+                    ?
+                    `
+
+                        <div style="
+                            margin-top:10px;
+
+                            padding:10px;
+
+                            background:
+                                var(
+                                    --info-bg,
+                                    #fff8e1
+                                );
+
+                            border-radius:8px;
+
+                            color:
+                                var(
+                                    --info-text,
+                                    #795548
+                                );
+
+                            font-size:13px;
+                        ">
+
+                            ℹ️ The routing service returned
+                            ${routes.length} alternative
+                            route${routes.length !== 1 ? "s" : ""}.
+
+                        </div>
+
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           STEP 12 — SHOW SAFETY VIBE
+           FOR SAFEST ROUTE
+           ================================================= */
+
+        if (routeResults.length > 0) {
+
+            const safestResult =
+                routeResults[
+                    safestRouteIndex
+                ];
+
+
+            const safestSafety =
+                safestResult.safety;
+
+
+            const safestScore =
+                safestSafety.score;
+
+
+            const lighting =
+                safestSafety.lighting;
+
+
+            const establishments =
+                safestSafety.establishments;
+
+
+            const crowd =
+                safestSafety.crowd;
+
+
+            const reports =
+                safestSafety.recent_reports;
+
+
+            currentSafetyScore =
+                safestScore;
+
+
+            showSafetyScore(
+
+                safestScore,
+
+                lighting,
+
+                establishments,
+
+                crowd,
+
+                reports
+
+            );
+            /* =================================================
+   STEP 12B — JOURNEY PROTECTION
+   ================================================= */
+
+showJourneyProtection(
+    safestResult.route,
+    destination
+);
+
+        }
+
+
+        /* =================================================
+           STEP 13 — FIT MAP TO ALL ROUTES
+           ================================================= */
+
+        const allRoutePoints = [];
+
+
+        routes.forEach(
+            function(route) {
+
+                route.geometry.coordinates.forEach(
+                    function(coordinate) {
+
+                        const lon =
+                            coordinate[0];
+
+                        const lat =
+                            coordinate[1];
+
+
+                        allRoutePoints.push(
+                            [
+                                lat,
+                                lon
+                            ]
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        if (
+            allRoutePoints.length > 0
+        ) {
+
+            map.fitBounds(
+                allRoutePoints,
+                {
+                    padding: [
+                        40,
+                        40
+                    ]
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           STEP 14 — CONSOLE DEBUG
+           ================================================= */
+
+        console.log(
+            "✅ HerRoute routing successful"
+        );
+
+
+        console.log(
+            "Routes returned:",
+            routes.length
+        );
+
+
+        console.log(
+            "Django Safety scores:",
+            safetyScores
+        );
+
+
+        console.log(
+            "Safest route number:",
+            safestRouteIndex + 1
+        );
+
+
+        console.log(
+            "Safety incidents displayed:",
+            incidentMarkers.length
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Routing error:",
+            error
+        );
+
+
+        routeStatus.innerHTML = `
+
+            <div style="
+                color:#d32f2f;
+
+                padding:10px;
+            ">
+
+                ❌ Unable to calculate route.
+
+                <br>
+
+                Please try another destination.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   15. SHOW SAFETY SCORE
+   ========================================================= */
+
+function showSafetyScore(
+    score,
+    lighting,
+    establishments,
+    crowd,
+    reports
+) {
+
+    const panel =
+        document.getElementById(
+            "safetyPanel"
+        );
+
+
+    if (!panel) {
+
+        return;
+
+    }
+
+
+    panel.style.display =
+        "block";
+
+
+    const safetyScoreElement =
+        document.getElementById(
+            "safetyScore"
+        );
+
+
+    if (safetyScoreElement) {
+
+        safetyScoreElement.innerHTML =
+            `${score}/100`;
+
+    }
+
+
+    const safetyBar =
+        document.getElementById(
+            "safetyBar"
+        );
+
+
+    if (safetyBar) {
+
+        safetyBar.style.width =
+            `${score}%`;
+
+    }
+
+
+    const lightingElement =
+        document.getElementById(
+            "lightingScore"
+        );
+
+
+    if (lightingElement) {
+
+        lightingElement.innerHTML =
+            `${lighting}%`;
+
+    }
+
+
+    const shopElement =
+        document.getElementById(
+            "shopScore"
+        );
+
+
+    if (shopElement) {
+
+        shopElement.innerHTML =
+            `${establishments}%`;
+
+    }
+
+
+    const crowdElement =
+        document.getElementById(
+            "crowdScore"
+        );
+
+
+    if (crowdElement) {
+
+        crowdElement.innerHTML =
+            `${crowd}%`;
+
+    }
+
+
+    const reportElement =
+        document.getElementById(
+            "reportScore"
+        );
+
+
+    if (reportElement) {
+
+        reportElement.innerHTML =
+            `${reports}%`;
+
+    }
+
+
+    const recommendation =
+        document.getElementById(
+            "safetyRecommendation"
+        );
+
+
+    if (!recommendation) {
+
+        return;
+
+    }
+
+
+    if (score >= 80) {
+
+        recommendation.innerHTML = `
+
+            🟢
+            <strong>
+                Recommended Route
+            </strong>
+
+            <br>
+
+            This route currently has a
+            high Safety Vibe based on
+            available safety signals.
+
+        `;
+
+    }
+
+    else if (score >= 60) {
+
+        recommendation.innerHTML = `
+
+            🟡
+            <strong>
+                Use With Caution
+            </strong>
+
+            <br>
+
+            Some safety signals are moderate.
+            Stay alert while walking.
+
+        `;
+
+    }
+
+    else {
+
+        recommendation.innerHTML = `
+
+            🔴
+            <strong>
+                Higher Risk
+            </strong>
+
+            <br>
+
+            Consider another route
+            if available.
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   16. REPORT UNSAFE AREA
+   ========================================================= */
+
+
+/* =========================================================
+   17. LIGHT / DARK THEME TOGGLE
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   Add this button somewhere inside your HTML <nav>:
+
+   <button
+       id="themeToggle"
+       class="theme-toggle"
+       type="button"
+   >
+       🌙
+   </button>
+*/
+
+
+const themeToggle =
+    document.getElementById(
+        "themeToggle"
+    );
+
+
+/* ---------------------------------------------------------
+   Load saved theme
+   --------------------------------------------------------- */
+
+const savedTheme =
+    localStorage.getItem(
+        "herroute-theme"
+    );
+
+
+if (savedTheme === "dark") {
+
+    document.body.classList.add(
+        "dark-theme"
+    );
+
+
+    if (themeToggle) {
+
+        themeToggle.innerHTML =
+            "☀️";
+
+        themeToggle.title =
+            "Switch to light mode";
+
+    }
+
+}
+
+else {
+
+    if (themeToggle) {
+
+        themeToggle.innerHTML =
+            "🌙";
+
+        themeToggle.title =
+            "Switch to dark mode";
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   Toggle theme
+   --------------------------------------------------------- */
+
+if (themeToggle) {
+
+    themeToggle.addEventListener(
+        "click",
+        function() {
+
+
+            document.body.classList.toggle(
+                "dark-theme"
+            );
+
+
+            const isDark =
+                document.body.classList.contains(
+                    "dark-theme"
+                );
+
+
+            if (isDark) {
+
+                localStorage.setItem(
+                    "herroute-theme",
+                    "dark"
+                );
+
+
+                themeToggle.innerHTML =
+                    "☀️";
+
+
+                themeToggle.title =
+                    "Switch to light mode";
+
+            }
+
+            else {
+
+                localStorage.setItem(
+                    "herroute-theme",
+                    "light"
+                );
+
+
+                themeToggle.innerHTML =
+                    "🌙";
+
+
+                themeToggle.title =
+                    "Switch to dark mode";
+
+            }
+
+        }
+    );
+
+}
+
+async function reportUnsafeArea() {
+
+    // Make sure we have the user's current location
+    if (!userMarker) {
+
+        alert("Please allow location access first.");
+
+        return;
+    }
+
+    const position = userMarker.getLatLng();
+
+    const button = document.getElementById("reportUnsafeBtn");
+
+    try {
+
+        // Prevent multiple clicks
+        if (button) {
+            button.disabled = true;
+            button.innerText = "📍 Reporting...";
+        }
+
+        const response = await fetch("/report-incident/", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                latitude: position.lat,
+
+                longitude: position.lng
+
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error || "Failed to report unsafe area"
+            );
+        }
+
+        console.log(
+            "New safety incident:",
+            data.incident
+        );
+
+        alert(
+            "⚠️ Unsafe area reported successfully!"
+        );
+
+        // Add the newly reported incident immediately to the map
+        const incident = {
+
+            id: data.incident.id,
+
+            latitude: data.incident.latitude,
+
+            longitude: data.incident.longitude,
+
+            incident_type: data.incident.incident_type,
+
+            severity: data.incident.severity,
+
+            description: data.incident.description,
+
+            distance: 0,
+
+            age_hours: 0
+        };
+
+        showIncidentOnMap(incident);
+
+    } catch (error) {
+
+        console.error(
+            "Report error:",
+            error
+        );
+
+        alert(
+            "Could not submit report. Please try again."
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.innerText =
+                "⚠️ Report Unsafe Area";
+        }
+    }
+}
+/* =========================================================
+   END OF HERROUTE JAVASCRIPT
+   ========================================================= */
+function openReportForm() {
+
+    const form = document.getElementById("reportForm");
+
+    if (form) {
+        form.style.display = "block";
+    }
+}
+function closeReportForm() {
+
+    const form = document.getElementById("reportForm");
+
+    if (form) {
+        form.style.display = "none";
+    }
+}
+async function submitUnsafeReport() {
+
+    // Check GPS
+    if (!userMarker) {
+
+        alert(
+            "Please allow location access first."
+        );
+
+        return;
+    }
+
+
+    // Get current location
+    const position = userMarker.getLatLng();
+
+
+    // Get form values
+    const incidentType =
+        document.getElementById(
+            "incidentType"
+        ).value;
+
+    const severity =
+        document.getElementById(
+            "incidentSeverity"
+        ).value;
+
+    const description =
+        document.getElementById(
+            "incidentDescription"
+        ).value;
+
+
+    const button =
+        document.getElementById(
+            "submitReportBtn"
+        );
+
+
+    try {
+
+        button.disabled = true;
+
+        button.innerText =
+            "📍 Submitting...";
+
+
+        const response = await fetch(
+            "/report-incident/",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    latitude: position.lat,
+
+                    longitude: position.lng,
+
+                    incident_type:
+                        incidentType,
+
+                    severity:
+                        severity,
+
+                    description:
+                        description
+                })
+            }
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Failed to submit report"
+            );
+        }
+
+
+        console.log(
+            "New incident:",
+            data.incident
+        );
+
+
+        alert(
+            "⚠️ Your safety report has been submitted successfully!"
+        );
+
+
+        // Create incident object
+        // for displaying immediately
+        const incident = {
+
+            id:
+                data.incident.id,
+
+            latitude:
+                data.incident.latitude,
+
+            longitude:
+                data.incident.longitude,
+
+            incident_type:
+                data.incident.incident_type,
+
+            severity:
+                data.incident.severity,
+
+            description:
+                data.incident.description,
+
+            distance: 0,
+
+            age_hours: 0
+        };
+
+
+        // Show marker immediately
+        showIncidentOnMap(
+            incident
+        );
+
+
+        // Close form
+        closeReportForm();
+
+
+        // Clear description
+        document.getElementById(
+            "incidentDescription"
+        ).value = "";
+
+
+    } catch (error) {
+
+        console.error(
+            "Report error:",
+            error
+        );
+
+
+        alert(
+            "Could not submit report: " +
+            error.message
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerText =
+            "Submit Report";
+    }
+}
+function openEmergencyPanel() {
+    document.getElementById("emergencyPanel").style.display = "block";
+
+    loadEmergencyContact();
+}
+
+function closeEmergencyPanel() {
+    document.getElementById("emergencyPanel").style.display = "none";
+}
+// ==========================================
+// EMERGENCY CONTACTS
+// ==========================================
+
+const EMERGENCY_CONTACTS_KEY =
+    "herrouteEmergencyContacts";
+
+
+// Get all saved contacts
+function getEmergencyContacts() {
+
+    const saved =
+        localStorage.getItem(
+            EMERGENCY_CONTACTS_KEY
+        );
+
+    if (!saved) {
+        return [];
+    }
+
+    try {
+        return JSON.parse(saved);
+    } catch (error) {
+        console.error(
+            "Error loading contacts:",
+            error
+        );
+
+        return [];
+    }
+}
+
+
+// Save contacts to localStorage
+function saveEmergencyContacts(contacts) {
+
+    localStorage.setItem(
+        EMERGENCY_CONTACTS_KEY,
+        JSON.stringify(contacts)
+    );
+}
+
+
+// ==========================================
+// OPEN PANEL
+// ==========================================
+
+function openEmergencyPanel() {
+
+    document.getElementById(
+        "emergencyPanel"
+    ).style.display = "block";
+
+    // Show saved contacts
+    // but DO NOT fill the form
+    displaySavedContacts();
+
+    // Always keep form empty
+    document.getElementById(
+        "emergencyName"
+    ).value = "";
+
+    document.getElementById(
+        "emergencyPhone"
+    ).value = "";
+}
+
+
+// ==========================================
+// CLOSE PANEL
+// ==========================================
+
+function closeEmergencyPanel() {
+
+    document.getElementById(
+        "emergencyPanel"
+    ).style.display = "none";
+}
+
+
+// ==========================================
+// SAVE NEW CONTACT
+// ==========================================
+
+function saveEmergencyContact() {
+
+    const nameInput =
+        document.getElementById(
+            "emergencyName"
+        );
+
+    const phoneInput =
+        document.getElementById(
+            "emergencyPhone"
+        );
+
+    const name =
+        nameInput.value.trim();
+
+    const phone =
+        phoneInput.value.trim();
+
+
+    if (!name || !phone) {
+
+        alert(
+            "Please enter both contact name and phone number."
+        );
+
+        return;
+    }
+
+
+    const contacts =
+        getEmergencyContacts();
+
+
+    // Add new contact
+    contacts.push({
+
+        id: Date.now(),
+
+        name: name,
+
+        phone: phone
+
+    });
+
+
+    saveEmergencyContacts(
+        contacts
+    );
+
+
+    // Clear form after saving
+    nameInput.value = "";
+
+    phoneInput.value = "";
+
+
+    // Refresh saved contacts
+    displaySavedContacts();
+
+
+    alert(
+        "Emergency contact saved successfully!"
+    );
+}
+
+
+// ==========================================
+// DISPLAY ALL SAVED CONTACTS
+// ==========================================
+
+function displaySavedContacts() {
+
+    const container =
+        document.getElementById(
+            "savedContact"
+        );
+
+    if (!container) {
+        return;
+    }
+
+
+    const contacts =
+        getEmergencyContacts();
+
+
+    if (contacts.length === 0) {
+
+        container.innerHTML = `
+            <div class="no-contacts">
+                👤 No emergency contacts saved yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="saved-contact-title">
+            ✅ Saved Contacts
+        </div>
+
+        ${contacts.map(contact => `
+
+            <div
+                class="saved-contact-item"
+            >
+
+                <div class="contact-details">
+
+                    <strong>
+                        ${escapeHTML(contact.name)}
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(contact.phone)}
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="delete-contact-btn"
+                    onclick="deleteEmergencyContact(${contact.id})"
+                >
+                    🗑️ Delete
+                </button>
+
+            </div>
+
+        `).join("")}
+
+    `;
+}
+
+
+// ==========================================
+// DELETE CONTACT
+// ==========================================
+
+function deleteEmergencyContact(
+    contactId
+) {
+
+    const contacts =
+        getEmergencyContacts();
+
+
+    const contact =
+        contacts.find(
+            c => c.id === contactId
+        );
+
+
+    if (!contact) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete ${contact.name} from emergency contacts?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const updatedContacts =
+        contacts.filter(
+            c => c.id !== contactId
+        );
+
+
+    saveEmergencyContacts(
+        updatedContacts
+    );
+
+
+    displaySavedContacts();
+}
+
+
+// ==========================================
+// SAFE HTML
+// ==========================================
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+// ==========================================
+// LOAD CONTACTS WHEN PAGE OPENS
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        displaySavedContacts();
+
+    }
+);
+function startSOSMusic() {
+    const music = document.getElementById("sosMusic");
+
+    if (!music) {
+        console.error("SOS music element not found.");
+        return;
+    }
+
+    music.volume = 0.35;
+
+    music.play().catch(function(error) {
+        console.error("Music could not start:", error);
+    });
+}
+
+
+function stopSOSMusic() {
+    const music = document.getElementById("sosMusic");
+
+    if (!music) {
+        return;
+    }
+
+    music.pause();
+    music.currentTime = 0;
+}
+function sendEmergencySOS() {
+
+    const contacts =
+        getEmergencyContacts();
+
+
+    if (contacts.length === 0) {
+
+        alert(
+            "Please save at least one emergency contact first."
+        );
+
+        return;
+    }
+
+
+    if (!userMarker) {
+
+        alert(
+            "Please allow location access first."
+        );
+
+        return;
+    }
+
+
+    const position =
+        userMarker.getLatLng();
+
+
+    const latitude =
+        position.lat;
+
+    const longitude =
+        position.lng;
+
+
+    const locationUrl =
+        `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+
+    const message =
+        `🚨 HERROUTE EMERGENCY ALERT 🚨\n\n` +
+        `I may be in an unsafe situation.\n` +
+        `Please check my location immediately.\n\n` +
+        `📍 My current location:\n` +
+        `${locationUrl}`;
+
+
+    const encodedMessage =
+        encodeURIComponent(message);
+
+
+    // Open WhatsApp for each saved contact
+    contacts.forEach(function(contact, index) {
+
+        const phone =
+            contact.phone.replace(
+                /[^\d+]/g,
+                ""
+            );
+
+
+        const whatsappUrl =
+            `https://wa.me/` +
+            `${phone.replace("+", "")}` +
+            `?text=${encodedMessage}`;
+
+
+        setTimeout(function() {
+
+            window.open(
+                whatsappUrl,
+                "_blank"
+            );
+
+        }, index * 800);
+
+    });
+}
+
+/* =========================================================
+   SAFE ARRIVAL CHECK-IN
+   ========================================================= */
+
+function showJourneyProtection(route, destination) {
+
+    const routeStatus =
+        document.getElementById("routeStatus");
+
+    if (!routeStatus || !route) {
+        return;
+    }
+
+    const walkingMinutes =
+        Math.max(
+            1,
+            Math.round(route.duration / 60)
+        );
+
+    routeStatus.innerHTML += `
+
+        <div id="journeyProtectionCard"
+            style="
+                margin-top:20px;
+                padding:20px;
+                border-radius:16px;
+                background:linear-gradient(
+                    135deg,
+                    #eef2ff,
+                    #f5f3ff
+                );
+                border:1px solid #c7d2fe;
+                box-shadow:0 6px 18px rgba(0,0,0,0.08);
+            ">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:10px;
+                margin-bottom:10px;
+            ">
+
+                <span style="
+                    font-size:28px;
+                ">
+                    🛡️
+                </span>
+
+                <strong style="
+                    font-size:19px;
+                    color:#4c1d95;
+                ">
+                    Journey Protection
+                </strong>
+
+            </div>
+
+            <div style="
+                font-size:14px;
+                color:#555;
+                line-height:1.6;
+                margin-bottom:15px;
+            ">
+
+                HerRoute will check on you if your
+                expected arrival time is missed.
+
+                <br>
+
+                📍 Destination:
+                <strong>${destination}</strong>
+
+                <br>
+
+                🚶 Expected journey:
+                <strong>${walkingMinutes} min</strong>
+
+            </div>
+
+            <button
+                onclick="startJourneyProtection(
+                    ${walkingMinutes},
+                    '${destination.replace(/'/g, "\\'")}'
+                )"
+                style="
+                    width:100%;
+                    padding:13px;
+                    border:none;
+                    border-radius:10px;
+                    background:#7c3aed;
+                    color:white;
+                    font-size:16px;
+                    font-weight:700;
+                    cursor:pointer;
+                "
+            >
+                🛡️ START JOURNEY PROTECTION
+            </button>
+
+            <button
+                onclick="simulateLateArrival()"
+                style="
+                    width:100%;
+                    margin-top:8px;
+                    padding:9px;
+                    border:none;
+                    background:transparent;
+                    color:#7c3aed;
+                    font-size:12px;
+                    cursor:pointer;
+                    text-decoration:underline;
+                "
+            >
+                Demo: Simulate Late Arrival
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   START JOURNEY PROTECTION
+   ========================================================= */
+
+function startJourneyProtection(
+    walkingMinutes,
+    destination
+) {
+
+    if (journeyTimer) {
+        clearTimeout(journeyTimer);
+    }
+
+    journeyActive = true;
+
+    journeyExpectedTime =
+        new Date(
+            Date.now() +
+            walkingMinutes * 60 * 1000
+        );
+
+    const card =
+        document.getElementById(
+            "journeyProtectionCard"
+        );
+
+    if (!card) {
+        return;
+    }
+
+    card.innerHTML = `
+
+        <div style="
+            text-align:center;
+        ">
+
+            <div style="
+                font-size:38px;
+                margin-bottom:8px;
+            ">
+                🛡️
+            </div>
+
+            <strong style="
+                display:block;
+                font-size:20px;
+                color:#166534;
+                margin-bottom:8px;
+            ">
+                Journey Protection Active
+            </strong>
+
+            <div style="
+                color:#555;
+                font-size:14px;
+                line-height:1.6;
+            ">
+
+                📍 Destination:
+                <strong>${destination}</strong>
+
+                <br>
+
+                ⏱️ Expected arrival:
+                <strong id="expectedArrivalTime">
+                    ${journeyExpectedTime.toLocaleTimeString(
+                        [],
+                        {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        }
+                    )}
+                </strong>
+
+            </div>
+
+            <div id="journeyStatus"
+                style="
+                    margin-top:15px;
+                    padding:10px;
+                    border-radius:9px;
+                    background:#dcfce7;
+                    color:#166534;
+                    font-weight:600;
+                "
+            >
+                🟢 HerRoute is monitoring your journey.
+            </div>
+
+            <button
+                onclick="confirmSafeArrival()"
+                style="
+                    width:100%;
+                    margin-top:15px;
+                    padding:13px;
+                    border:none;
+                    border-radius:10px;
+                    background:#16a34a;
+                    color:white;
+                    font-size:16px;
+                    font-weight:700;
+                    cursor:pointer;
+                "
+            >
+                ✅ I'M SAFE
+            </button>
+
+        </div>
+    `;
+
+    /*
+       When expected journey time expires,
+       show the safety check.
+    */
+
+    journeyTimer = setTimeout(
+        function() {
+            showSafetyCheck(destination);
+        },
+        walkingMinutes * 60 * 1000
+    );
+}
+
+
+/* =========================================================
+   USER CONFIRMS SAFE
+   ========================================================= */
+
+function confirmSafeArrival() {
+
+    journeyActive = false;
+
+    if (journeyTimer) {
+        clearTimeout(journeyTimer);
+        journeyTimer = null;
+    }
+
+    const card =
+        document.getElementById(
+            "journeyProtectionCard"
+        );
+
+    if (!card) {
+        return;
+    }
+
+    card.innerHTML = `
+
+        <div style="
+            text-align:center;
+            padding:10px;
+        ">
+
+            <div style="
+                font-size:45px;
+            ">
+                ✅
+            </div>
+
+            <strong style="
+                display:block;
+                margin-top:8px;
+                font-size:21px;
+                color:#15803d;
+            ">
+                You're Safe
+            </strong>
+
+            <p style="
+                margin:8px 0 0;
+                color:#555;
+            ">
+                Journey check-in completed successfully.
+            </p>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   ARRIVAL TIME MISSED
+   ========================================================= */
+
+function showSafetyCheck(destination) {
+
+    journeyActive = false;
+
+    const card =
+        document.getElementById(
+            "journeyProtectionCard"
+        );
+
+    if (!card) {
+        return;
+    }
+
+    card.innerHTML = `
+
+        <div style="
+            text-align:center;
+        ">
+
+            <div style="
+                font-size:42px;
+            ">
+                ⚠️
+            </div>
+
+            <strong style="
+                display:block;
+                font-size:21px;
+                color:#b45309;
+                margin-bottom:8px;
+            ">
+                Are You Safe?
+            </strong>
+
+            <p style="
+                color:#555;
+                line-height:1.5;
+            ">
+                Your expected arrival time has passed.
+                <br>
+                We haven't received your check-in yet.
+            </p>
+
+            <button
+                onclick="confirmSafeArrival()"
+                style="
+                    width:100%;
+                    padding:13px;
+                    margin-top:8px;
+                    border:none;
+                    border-radius:10px;
+                    background:#16a34a;
+                    color:white;
+                    font-weight:700;
+                    font-size:15px;
+                    cursor:pointer;
+                "
+            >
+                ✅ I'M SAFE
+            </button>
+
+            <button
+                onclick="
+                    if (typeof sendEmergencySOS === 'function') {
+                        sendEmergencySOS();
+                    } else {
+                        alert('SOS activated');
+                    }
+                "
+                style="
+                    width:100%;
+                    padding:13px;
+                    margin-top:8px;
+                    border:none;
+                    border-radius:10px;
+                    background:#dc2626;
+                    color:white;
+                    font-weight:700;
+                    font-size:15px;
+                    cursor:pointer;
+                "
+            >
+                🚨 SEND SOS
+            </button>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   DEMO MODE — FOR PITCH
+   ========================================================= */
+
+function simulateLateArrival() {
+
+    const card =
+        document.getElementById(
+            "journeyProtectionCard"
+        );
+
+    if (!card) {
+        return;
+    }
+
+    showSafetyCheck("Your destination");
+}
+</script>
+</body>
 </html>
+```

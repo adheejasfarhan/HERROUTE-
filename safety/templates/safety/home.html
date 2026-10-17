@@ -1983,7 +1983,22 @@ display: block;
         </p>
 
     </div>
-
+<button
+    type="button"
+    onclick="loadSupportPlaces()"
+    style="
+        margin: 10px 0;
+        padding: 12px 18px;
+        background: #9c27b0;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    "
+>
+    🏥 Show Public Support Places
+</button>
 
     <!-- ONE MAP ONLY -->
     <div id="map"></div>
@@ -2781,7 +2796,102 @@ const map = L.map("map").setView(
     [11.2588, 75.7804],
     14
 );
+// ======================================
+// HERROUTE PUBLIC SUPPORT PLACES LAYER
+// ======================================
 
+const supportPlacesLayer = L.layerGroup().addTo(map);
+
+
+let supportPlacesLoading = false;
+
+async function loadSupportPlaces() {
+    // Prevent repeated requests while one is still running
+    if (supportPlacesLoading) {
+        console.log("Support places are already loading.");
+        return;
+    }
+
+    supportPlacesLoading = true;
+
+    try {
+        const center = map.getCenter();
+
+        const url =
+            `/api/safety/nearby-places/?lat=${center.lat}` +
+            `&lon=${center.lng}&radius=2000`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Clear old markers only after a successful response
+        supportPlacesLayer.clearLayers();
+
+        if (!data.places || data.places.length === 0) {
+            console.log("No support places were returned.");
+            return;
+        }
+
+        data.places.forEach(place => {
+            const icons = {
+                hospital: "🏥",
+                clinic: "🏥",
+                doctors: "🩺",
+                pharmacy: "💊",
+                police: "👮",
+                fire_station: "🚒",
+                toilets: "🚻"
+            };
+
+            const iconSymbol = icons[place.category] || "📍";
+
+            const marker = L.marker([
+                Number(place.latitude),
+                Number(place.longitude)
+            ]);
+
+            marker.bindPopup(`
+                <strong>${iconSymbol} ${
+                    escapeSupportText(place.name || "Support place")
+                }</strong><br>
+                Type: ${escapeSupportText(place.category || "Unknown")}<br>
+                Listed hours: ${
+                    escapeSupportText(place.opening_hours || "Hours not listed")
+                }<br>
+                <small>Source: OpenStreetMap</small><br>
+                <small>Not independently verified</small>
+            `);
+
+            marker.addTo(supportPlacesLayer);
+        });
+
+        console.log(`Loaded ${data.places.length} support places.`);
+
+    } catch (error) {
+        console.error("Support places error:", error);
+        alert(
+            "Support places are temporarily unavailable. " +
+            "Please wait a little before trying again."
+        );
+    } finally {
+        supportPlacesLoading = false;
+    }
+}
+
+function escapeSupportText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
 
 /* =========================================================
    2. MAP TILES
@@ -4242,186 +4352,52 @@ showJourneyProtection(
 /* =========================================================
    15. SHOW SAFETY SCORE
    ========================================================= */
+/* =========================================================
+   15. SHOW SAFETY SCORE
+   ========================================================= */
 
-function showSafetyScore(
-    score,
-    lighting,
-    establishments,
-    crowd,
-    reports
-) {
+function showSafetyScore(score, lighting, establishments, crowd, reports, isUnreported) {
+    const panel = document.getElementById("safetyPanel");
+    if (!panel) return;
+    
+    panel.style.display = "block";
 
-    const panel =
-        document.getElementById(
-            "safetyPanel"
-        );
-
-
-    if (!panel) {
-
-        return;
-
-    }
-
-
-    panel.style.display =
-        "block";
-
-
-    const safetyScoreElement =
-        document.getElementById(
-            "safetyScore"
-        );
-
-
+    const safetyScoreElement = document.getElementById("safetyScore");
     if (safetyScoreElement) {
-
-        safetyScoreElement.innerHTML =
-            `${score}/100`;
-
+        if (isUnreported) {
+            safetyScoreElement.innerHTML = `<span style="background:#e5e7eb; color:#4b5563; font-size:14px; font-weight:700; padding:6px 12px; border-radius:8px; letter-spacing:0.5px; border: 1px solid #d1d5db;">UNREPORTED</span>`;
+        } else {
+            safetyScoreElement.innerHTML = `${score}/100`;
+        }
     }
 
-
-    const safetyBar =
-        document.getElementById(
-            "safetyBar"
-        );
-
-
+    const safetyBar = document.getElementById("safetyBar");
     if (safetyBar) {
-
-        safetyBar.style.width =
-            `${score}%`;
-
+        safetyBar.style.width = isUnreported ? "0%" : `${score}%`;
+        safetyBar.style.background = isUnreported ? "#e5e7eb" : "#4caf50";
     }
 
+    if (document.getElementById("lightingScore")) document.getElementById("lightingScore").innerHTML = isUnreported ? "N/A" : `${lighting}%`;
+    if (document.getElementById("shopScore")) document.getElementById("shopScore").innerHTML = isUnreported ? "N/A" : `${establishments}%`;
+    if (document.getElementById("crowdScore")) document.getElementById("crowdScore").innerHTML = isUnreported ? "N/A" : `${crowd}%`;
+    if (document.getElementById("reportScore")) document.getElementById("reportScore").innerHTML = isUnreported ? "N/A" : `${reports}%`;
 
-    const lightingElement =
-        document.getElementById(
-            "lightingScore"
-        );
+    const recommendation = document.getElementById("safetyRecommendation");
+    if (!recommendation) return;
 
-
-    if (lightingElement) {
-
-        lightingElement.innerHTML =
-            `${lighting}%`;
-
-    }
-
-
-    const shopElement =
-        document.getElementById(
-            "shopScore"
-        );
-
-
-    if (shopElement) {
-
-        shopElement.innerHTML =
-            `${establishments}%`;
-
-    }
-
-
-    const crowdElement =
-        document.getElementById(
-            "crowdScore"
-        );
-
-
-    if (crowdElement) {
-
-        crowdElement.innerHTML =
-            `${crowd}%`;
-
-    }
-
-
-    const reportElement =
-        document.getElementById(
-            "reportScore"
-        );
-
-
-    if (reportElement) {
-
-        reportElement.innerHTML =
-            `${reports}%`;
-
-    }
-
-
-    const recommendation =
-        document.getElementById(
-            "safetyRecommendation"
-        );
-
-
-    if (!recommendation) {
-
-        return;
-
-    }
-
-
-    if (score >= 80) {
-
+    if (isUnreported) {
         recommendation.innerHTML = `
-
-            🟢
-            <strong>
-                Recommended Route
-            </strong>
-
-            <br>
-
-            This route currently has a
-            high Safety Vibe based on
-            available safety signals.
-
+            ⚪ <strong>No Data Available</strong><br>
+            This route has no reported incidents, but we lack data to guarantee its safety. Stay alert.
         `;
-
+    } else if (score >= 80) {
+        recommendation.innerHTML = `🟢 <strong>Recommended Route</strong><br>This route currently has a high Safety Vibe based on available safety signals.`;
+    } else if (score >= 60) {
+        recommendation.innerHTML = `🟡 <strong>Use With Caution</strong><br>Some safety signals are moderate. Stay alert while walking.`;
+    } else {
+        recommendation.innerHTML = `🔴 <strong>Higher Risk</strong><br>Consider another route if available.`;
     }
-
-    else if (score >= 60) {
-
-        recommendation.innerHTML = `
-
-            🟡
-            <strong>
-                Use With Caution
-            </strong>
-
-            <br>
-
-            Some safety signals are moderate.
-            Stay alert while walking.
-
-        `;
-
-    }
-
-    else {
-
-        recommendation.innerHTML = `
-
-            🔴
-            <strong>
-                Higher Risk
-            </strong>
-
-            <br>
-
-            Consider another route
-            if available.
-
-        `;
-
-    }
-
 }
-
 
 /* =========================================================
    16. REPORT UNSAFE AREA
@@ -4445,118 +4421,45 @@ function showSafetyScore(
    </button>
 */
 
-
-const themeToggle =
-    document.getElementById(
-        "themeToggle"
-    );
-
+const themeToggle = document.getElementById("themeToggle");
 
 /* ---------------------------------------------------------
    Load saved theme
    --------------------------------------------------------- */
-
-const savedTheme =
-    localStorage.getItem(
-        "herroute-theme"
-    );
-
+const savedTheme = localStorage.getItem("herroute-theme");
 
 if (savedTheme === "dark") {
-
-    document.body.classList.add(
-        "dark-theme"
-    );
-
-
+    document.body.classList.add("dark-theme");
     if (themeToggle) {
-
-        themeToggle.innerHTML =
-            "☀️";
-
-        themeToggle.title =
-            "Switch to light mode";
-
+        themeToggle.innerHTML = "☀️";
+        themeToggle.title = "Switch to light mode";
     }
-
-}
-
-else {
-
+} else {
     if (themeToggle) {
-
-        themeToggle.innerHTML =
-            "🌙";
-
-        themeToggle.title =
-            "Switch to dark mode";
-
+        themeToggle.innerHTML = "🌙";
+        themeToggle.title = "Switch to dark mode";
     }
-
 }
-
 
 /* ---------------------------------------------------------
    Toggle theme
    --------------------------------------------------------- */
-
 if (themeToggle) {
+    themeToggle.addEventListener("click", function() {
+        document.body.classList.toggle("dark-theme");
+        const isDark = document.body.classList.contains("dark-theme");
 
-    themeToggle.addEventListener(
-        "click",
-        function() {
-
-
-            document.body.classList.toggle(
-                "dark-theme"
-            );
-
-
-            const isDark =
-                document.body.classList.contains(
-                    "dark-theme"
-                );
-
-
-            if (isDark) {
-
-                localStorage.setItem(
-                    "herroute-theme",
-                    "dark"
-                );
-
-
-                themeToggle.innerHTML =
-                    "☀️";
-
-
-                themeToggle.title =
-                    "Switch to light mode";
-
-            }
-
-            else {
-
-                localStorage.setItem(
-                    "herroute-theme",
-                    "light"
-                );
-
-
-                themeToggle.innerHTML =
-                    "🌙";
-
-
-                themeToggle.title =
-                    "Switch to dark mode";
-
-            }
-
+        if (isDark) {
+            localStorage.setItem("herroute-theme", "dark");
+            themeToggle.innerHTML = "☀️";
+            themeToggle.title = "Switch to light mode";
+        } else {
+            localStorage.setItem("herroute-theme", "light");
+            themeToggle.innerHTML = "🌙";
+            themeToggle.title = "Switch to dark mode";
         }
-    );
-
+    });
 }
-
 async function reportUnsafeArea() {
 
     // Make sure we have the user's current location
@@ -4677,173 +4580,109 @@ function closeReportForm() {
         form.style.display = "none";
     }
 }
+
 async function submitUnsafeReport() {
-
-    // Check GPS
     if (!userMarker) {
-
-        alert(
-            "Please allow location access first."
-        );
-
+        alert("Please allow location access first.");
         return;
     }
 
-
-    // Get current location
     const position = userMarker.getLatLng();
 
+    const incidentType = document.getElementById("incidentType").value;
+    const severityValue = document.getElementById("incidentSeverity").value;
+    const description = document.getElementById("incidentDescription").value.trim();
 
-    // Get form values
-    const incidentType =
-        document.getElementById(
-            "incidentType"
-        ).value;
+    const button = document.getElementById("submitReportBtn");
 
-    const severity =
-        document.getElementById(
-            "incidentSeverity"
-        ).value;
+    // Convert form severity into the integer expected by Django
+    const severityMap = {
+        "Low": 1,
+        "Medium": 2,
+        "High": 3,
+        "1": 1,
+        "2": 2,
+        "3": 3
+    };
 
-    const description =
-        document.getElementById(
-            "incidentDescription"
-        ).value;
+    const severity = severityMap[severityValue];
 
-
-    const button =
-        document.getElementById(
-            "submitReportBtn"
-        );
-
+    if (!severity) {
+        alert("Please select a valid severity.");
+        return;
+    }
 
     try {
-
         button.disabled = true;
+        button.innerText = "Submitting...";
 
-        button.innerText =
-            "📍 Submitting...";
+        const response = await fetch("/api/safety/report-incident/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                latitude: position.lat,
+                longitude: position.lng,
+                incident_type: incidentType,
+                severity: severity,
+                description: description
+            })
+        });
 
+        // Read response as text first to avoid a JSON.parse error
+        const responseText = await response.text();
+        let data;
 
-        const response = await fetch(
-            "/report-incident/",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    latitude: position.lat,
-
-                    longitude: position.lng,
-
-                    incident_type:
-                        incidentType,
-
-                    severity:
-                        severity,
-
-                    description:
-                        description
-                })
-            }
-        );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
+        try {
+            data = JSON.parse(responseText);
+        } catch {
             throw new Error(
-                data.error ||
-                "Failed to submit report"
+                "The server returned a non-JSON response. Check Django's terminal for errors."
             );
         }
 
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to save report.");
+        }
 
-        console.log(
-            "New incident:",
-            data.incident
-        );
+        alert("Safety report saved successfully!");
 
-
-        alert(
-            "⚠️ Your safety report has been submitted successfully!"
-        );
-
-
-        // Create incident object
-        // for displaying immediately
         const incident = {
-
-            id:
-                data.incident.id,
-
-            latitude:
-                data.incident.latitude,
-
-            longitude:
-                data.incident.longitude,
-
-            incident_type:
-                data.incident.incident_type,
-
-            severity:
-                data.incident.severity,
-
-            description:
-                data.incident.description,
-
+            ...data.incident,
             distance: 0,
-
             age_hours: 0
         };
 
+        if (typeof showIncidentOnMap === "function") {
+            showIncidentOnMap(incident);
+        }
 
-        // Show marker immediately
-        showIncidentOnMap(
-            incident
-        );
+        if (typeof closeReportForm === "function") {
+            closeReportForm();
+        }
 
-
-        // Close form
-        closeReportForm();
-
-
-        // Clear description
-        document.getElementById(
-            "incidentDescription"
-        ).value = "";
-
+        document.getElementById("incidentDescription").value = "";
 
     } catch (error) {
-
-        console.error(
-            "Report error:",
-            error
-        );
-
-
-        alert(
-            "Could not submit report: " +
-            error.message
-        );
-
-
+        console.error("Report submission error:", error);
+        alert("Could not submit report: " + error.message);
     } finally {
-
         button.disabled = false;
-
-        button.innerText =
-            "Submit Report";
+        button.innerText = "Submit Report";
     }
 }
+
+function getCookie(name) {
+    const cookie = document.cookie
+        .split("; ")
+        .find(row => row.startsWith(name + "="));
+
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
 function openEmergencyPanel() {
     document.getElementById("emergencyPanel").style.display = "block";
 

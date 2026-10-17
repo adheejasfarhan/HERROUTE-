@@ -16,7 +16,11 @@ urlpatterns = [
     views.all_incidents_api,
     name="all_incidents_api"
 ),
-
+path(
+    "nearby-places/",
+    views.nearby_places_api,
+    name="nearby_places_api",
+),
 path(
     "nearby-places/",
     views.nearby_places_api,
